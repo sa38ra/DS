@@ -1,139 +1,187 @@
-#include<iostream>
+#include <iostream>
 using namespace std;
 
-// Define the maximum number of vertices
-#define MAX 5
-
-// Define a struct to represent a vertex with a label and visited status
-struct Vertex {
-   char label;   // Label to identify the vertex (e.g., 'S', 'A', etc.)
-   bool visited; // Boolean flag to check if the vertex has been visited during BFS
+// Define the structure for the binary tree node
+struct node {
+   int value;           // Stores the value of the node
+   struct node *leftChild, *rightChild;  // Pointers to left and right child nodes
 };
 
-// Declare queue variables for BFS
-int queue[MAX];  // Array to hold the queue
-int rear = -1;   // Rear of the queue, initialized to -1 (empty queue)
-int front = 0;   // Front of the queue, initialized to 0
-int queueItemCount = 0; // To track the number of elements in the queue
-
-// Declare graph variables
-// Array to hold the list of vertices
-struct Vertex* lstVertices[MAX];
-// Adjacency matrix to represent the edges between vertices
-int adjMatrix[MAX][MAX];
-// Count the number of vertices in the graph
-int vertexCount = 0;
-
-// Queue functions
-
-// Insert data into the queue (increase rear, add item to the queue)
-void insert(int data) {
-   queue[++rear] = data;   // Increment the rear and insert the data into the queue
-   queueItemCount++;       // Increase the count of queue items
+// Function to create a new node with a given value
+struct node *newNode(int value){
+   struct node *temp = (struct node *)malloc(sizeof(struct node)); // Allocate memory for a new node
+   temp->value = value;     // Set the node value
+   temp->leftChild = temp->rightChild = NULL;  // Initialize left and right children as NULL
+   return temp;  // Return the new node
 }
 
-// Remove data from the front of the queue (decrease front)
-int removeData() {
-   queueItemCount--;  // Decrease the count of queue items
-   return queue[front++];  // Return the data at the front of the queue and increment the front
+// Function to perform in-order traversal (LNR) - Left, Node, Right
+void printInOrder(struct node* root_node){
+   if(root_node != NULL) {  // If the current node is not NULL
+      printInOrder(root_node->leftChild);  // Recurse on the left child
+      cout << "\n" << root_node->value;  // Print the value of the node
+      printInOrder(root_node->rightChild);  // Recurse on the right child
+   }
 }
 
-// Check if the queue is empty (queueItemCount == 0)
-bool isQueueEmpty() {
-   return queueItemCount == 0;  // Return true if queue is empty, otherwise false
+// Function to perform pre-order traversal (NLR) - Node, Left, Right
+void printPreOrder(struct node* root_node){
+   if(root_node != NULL) {  // If the current node is not NULL
+      cout << "\n" << root_node->value;  // Print the value of the node
+      printPreOrder(root_node->leftChild);  // Recurse on the left child
+      printPreOrder(root_node->rightChild);  // Recurse on the right child
+   }
 }
 
-// Graph functions
-
-// Add a vertex to the list of vertices
-void addVertex(char label) {
-   struct Vertex* vertex = (struct Vertex*) malloc(sizeof(struct Vertex));  // Allocate memory for the vertex
-   vertex->label = label;  // Set the label of the vertex
-   vertex->visited = false; // Initially, the vertex is not visited
-   lstVertices[vertexCount++] = vertex;  // Add the vertex to the list and increment the vertex count
+// Function to perform post-order traversal (RLN) - Right, Left, Node
+void printPostOrder(struct node* root_node){
+   if(root_node != NULL) {  // If the current node is not NULL
+      printPostOrder(root_node->rightChild);  // Recurse on the right child
+      printPostOrder(root_node->leftChild);  // Recurse on the left child
+      cout << "\n" << root_node->value;  // Print the value of the node
+   }
 }
 
-// Add an edge between two vertices (undirected graph)
-void addEdge(int start, int end) {
-   adjMatrix[start][end] = 1;  // Mark an edge from 'start' to 'end'
-   adjMatrix[end][start] = 1;  // Since the graph is undirected, mark an edge from 'end' to 'start' as well
+// Function to perform in-order traversal (LNR) - Left, Node, Right
+void traverseLNR(struct node* root_node) {
+   if (root_node != NULL) {
+      traverseLNR(root_node->leftChild);  // Visit the left subtree
+      cout << root_node->value << " ";  // Print the node
+      traverseLNR(root_node->rightChild);  // Visit the right subtree
+   }
 }
 
-// Display a vertex by its index (print the label)
-void displayVertex(int vertexIndex) {
-   printf("%c ", lstVertices[vertexIndex]->label); // Print the label of the vertex
+// Function to perform reverse in-order traversal (RLN) - Right, Left, Node
+void traverseRLN(struct node* root_node) {
+   if (root_node != NULL) {
+      traverseRLN(root_node->rightChild);  // Visit the right subtree
+      cout << root_node->value << " ";  // Print the node
+      traverseRLN(root_node->leftChild);  // Visit the left subtree
+   }
 }
 
-// Get the index of an adjacent unvisited vertex
-int getAdjUnvisitedVertex(int vertexIndex) {
-   int i;
-   // Iterate through all vertices
-   for(i = 0; i < vertexCount; i++) {
-      // If there's an edge from 'vertexIndex' to 'i' and 'i' is unvisited
-      if(adjMatrix[vertexIndex][i] == 1 && lstVertices[i]->visited == false) {
-         return i; // Return the index of the unvisited adjacent vertex
+// Function to perform pre-order traversal (NLR) - Node, Left, Right
+void traverseNLR(struct node* root_node) {
+   if (root_node != NULL) {
+      cout << root_node->value << " ";  // Print the node
+      traverseNLR(root_node->leftChild);  // Visit the left subtree
+      traverseNLR(root_node->rightChild);  // Visit the right subtree
+   }
+}
+
+// Function to insert a node with a given value into the binary search tree
+struct node* insert_node(struct node* node, int value){
+   if(node == NULL) {  // If the tree is empty or we reached a NULL node, insert the new node here
+      return newNode(value);
+   }
+   // If the value is less than the current node's value, go to the left child
+   if(value < node->value) {
+      node->leftChild = insert_node(node->leftChild, value);
+   } 
+   // If the value is greater than the current node's value, go to the right child
+   else if(value > node->value) {
+      node->rightChild = insert_node(node->rightChild, value);
+   }
+   // If the value is equal to the current node's value, do nothing (no duplicates in BST)
+   return node;  // Return the (unchanged) node pointer
+}
+
+// Function to find the minimum value in the binary search tree
+struct node* findMin(struct node* node) {
+   if (node == NULL) {
+      return NULL;
+   }
+   while (node->leftChild != NULL) {  // Go left until the minimum node is found
+      node = node->leftChild;
+   }
+   return node;  // Return the minimum node
+}
+
+// Function to delete a node from the binary search tree
+struct node* delete_node(struct node* root, int value) {
+   if (root == NULL) {
+      return NULL;  // If the root is NULL, return NULL (node to be deleted is not found)
+   }
+
+   // If the value is smaller, recursively go to the left subtree
+   if (value < root->value) {
+      root->leftChild = delete_node(root->leftChild, value);
+   }
+   // If the value is larger, recursively go to the right subtree
+   else if (value > root->value) {
+      root->rightChild = delete_node(root->rightChild, value);
+   }
+   // If value is same as root node's value, then this is the node to be deleted
+   else {
+      // Node with only one child or no child
+      if (root->leftChild == NULL) {
+         struct node* temp = root->rightChild;
+         free(root);  // Free memory
+         return temp;  // Return the right child or NULL
       }
+      else if (root->rightChild == NULL) {
+         struct node* temp = root->leftChild;
+         free(root);  // Free memory
+         return temp;  // Return the left child or NULL
+      }
+
+      // Node with two children: Get the inorder successor (smallest in the right subtree)
+      struct node* temp = findMin(root->rightChild);  // Find minimum in right subtree
+      root->value = temp->value;  // Copy the inorder successor's value to this node
+
+      // Delete the inorder successor
+      root->rightChild = delete_node(root->rightChild, temp->value);
    }
-   return -1; // If no unvisited adjacent vertex is found, return -1
+   return root;  // Return the (unchanged) root node
 }
 
-// Breadth First Search function (BFS)
-void breadthFirstSearch() {
-   int i;
-   // Start BFS from the first vertex (index 0)
-   lstVertices[0]->visited = true;  // Mark the first vertex as visited
-   displayVertex(0);  // Display the first vertex
-   insert(0);  // Insert the index of the first vertex into the queue
+int main(){
+   cout << "Binary Tree \n\n";
+   struct node *root_node = NULL;
 
-   int unvisitedVertex;
-   // Continue BFS until the queue is empty
-   while(!isQueueEmpty()) {
-      // Remove the front vertex from the queue
-      int tempVertex = removeData();
-      
-      // Get all unvisited adjacent vertices and add them to the queue
-      while((unvisitedVertex = getAdjUnvisitedVertex(tempVertex)) != -1) {
-         lstVertices[unvisitedVertex]->visited = true;  // Mark the adjacent vertex as visited
-         displayVertex(unvisitedVertex);  // Display the unvisited adjacent vertex
-         insert(unvisitedVertex);  // Insert the unvisited adjacent vertex into the queue
-      }
-   }
+   // Insert nodes into the binary search tree
+   root_node = insert_node(root_node, 10);
+   insert_node(root_node , 10);
+   insert_node(root_node , 30);
+   insert_node(root_node , 25);
+   insert_node(root_node , 36);
+   insert_node(root_node , 56);
+   insert_node(root_node , 6);
 
-   // Once the BFS is complete, reset the visited flag for all vertices
-   for(i = 0; i < vertexCount; i++) {
-      lstVertices[i]->visited = false; // Reset the visited flag
-   }
-}
-
-// Main function
-int main() {
-   int i, j;
-
-   // Initialize the adjacency matrix to 0 (no edges)
-   for(i = 0; i < MAX; i++) {   
-      for(j = 0; j < MAX; j++) {
-         adjMatrix[i][j] = 0;  // Set all values in the adjacency matrix to 0
-      }
-   }
-
-   // Add vertices to the graph with labels 'S', 'A', 'B', 'C', and 'D'
-   addVertex('S');   // 0
-   addVertex('A');   // 1
-   addVertex('B');   // 2
-   addVertex('C');   // 3
-   addVertex('D');   // 4
-
-   // Add edges between vertices to form the graph
-   addEdge(0, 1);    // S - A
-   addEdge(0, 2);    // S - B
-   addEdge(0, 3);    // S - C
-   addEdge(1, 4);    // A - D
-   addEdge(2, 4);    // B - D
-   addEdge(3, 4);    // C - D
-
-   // Print a message indicating that BFS will start
-   printf("\nBreadth First Search: ");
-   breadthFirstSearch();  // Perform BFS starting from vertex 'S'
+   // Print in-order (LNR)
+   cout << "In-order Traversal (LNR): ";
+   printInOrder(root_node);
    
-   return 0;  // End of program
+   // Print pre-order (NLR)
+   cout << "\nPre-order Traversal (NLR): ";
+   printPreOrder(root_node);
+
+   // Print post-order (RLN)
+   cout << "\nPost-order Traversal (RLN): ";
+   printPostOrder(root_node);
+
+   // Print in-order traversal using traverseLNR
+   cout << "\nIn-order Traversal (LNR) using traverseLNR: ";
+   traverseLNR(root_node);
+   
+   // Print reverse in-order traversal (RLN) using traverseRLN
+   cout << "\nReverse In-order Traversal (RLN) using traverseRLN: ";
+   traverseRLN(root_node);
+   
+   // Print pre-order traversal (NLR) using traverseNLR
+   cout << "\nPre-order Traversal (NLR) using traverseNLR: ";
+   traverseNLR(root_node);
+
+   // Deleting a node and then printing the tree again
+   root_node = delete_node(root_node, 36);
+   cout << "\nAfter Deleting 36, In-order Traversal: ";
+   printInOrder(root_node);
+
+   // Find minimum value
+   struct node* minNode = findMin(root_node);
+   if (minNode != NULL) {
+      cout << "\nMinimum value in the tree is: " << minNode->value << endl;
+   }
+
+   return 0;  // End of the program
 }
