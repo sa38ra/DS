@@ -1,0 +1,52 @@
+1. Strictly Binary Tree (Full Binary Tree):
+
+Every non-leaf node has exactly two children.
+
+Total nodes with  leaves: .
+
+All nodes have either 0 or 2 children (no node has only one child).
+
+
+
+---
+
+2. Complete Binary Tree:
+
+All levels except possibly the last one are fully filled.
+
+All leaves are at the last level .
+
+Total nodes for depth : .
+
+Total leaves at the last level: .
+
+
+
+---
+
+3. Almost Complete Binary Tree:
+
+All levels are fully filled except possibly the last.
+
+Leaves are either at the last level  or the second-to-last level .
+
+Subcategories:
+
+Strictly Binary Almost Complete Tree:
+
+Total nodes: , where  is the number of leaves.
+
+
+Non-Strictly Binary Almost Complete Tree:
+
+Total nodes: , where  is the number of leaves.
+
+
+Exactly two distinct structures exist for  leaves (one strictly binary and one not).
+
+
+With  nodes:
+
+Only one structure exists.
+
+It is strictly binary if  is odd and not strictly binary if  is even.
