@@ -162,18 +162,99 @@ void sort() {
     }
 }
 
-// Main function to demonstrate the linked list operations
+void reverse(struct node** head_ref) {
+    struct node* prev = NULL;     // Pointer to hold the previous node (initially NULL)
+    struct node* current = *head_ref; // Pointer to traverse the list, starting from the head
+    struct node* next = NULL;     // Pointer to hold the next node temporarily
+
+    // Traverse the entire list
+    while (current != NULL) {
+        next = current->next;     // Save the next node
+        current->next = prev;     // Reverse the current node's pointer to point to the previous node
+        prev = current;           // Move the prev pointer one step forward
+        current = next;           // Move the current pointer one step forward
+    }
+
+    // After the loop, prev will point to the new head of the list
+    *head_ref = prev;
+}
+
 int main() {
-    insertFirst(1, 10); // Insert node with key=1, data=10
-    insertFirst(2, 20); // Insert node with key=2, data=20
-    insertFirst(3, 30); // Insert node with key=3, data=30
+    // Insert elements into the linked list
+    // `insertFirst` adds elements at the beginning of the list
+    insertFirst(1, 10); // Add a node with key=1 and data=10
+    insertFirst(2, 20); // Add a node with key=2 and data=20
+    insertFirst(3, 30); // Add a node with key=3 and data=30
+    insertFirst(4, 1);  // Add a node with key=4 and data=1
+    insertFirst(5, 40); // Add a node with key=5 and data=40
+    insertFirst(6, 56); // Add a node with key=6 and data=56
 
-    cout << "Original list:";
-    printList(); // Display the list
+    // Display the original list
+    cout << "Original List: ";
+    printList();
 
-    sort(); // Sort the list
-    cout << "\nSorted list:";
-    printList(); // Display the sorted list
+    // Delete all nodes from the list one by one
+    while (!isEmpty()) {
+        struct node* temp = deleteFirst(); // Delete the first node and store it in temp
+        cout << "\nDeleted value: ";
+        cout << temp->key << "," << temp->data; // Print the key and data of the deleted node
+    }
+
+    // Check and print the list after all nodes are deleted
+    cout << "\nList after deleting all items: ";
+    printList();
+
+    // Restore the list by reinserting the same elements
+    insertFirst(1, 10);
+    insertFirst(2, 20);
+    insertFirst(3, 30);
+    insertFirst(4, 1);
+    insertFirst(5, 40);
+    insertFirst(6, 56);
+
+    cout << "\nRestored List: ";
+    printList(); // Display the restored list
+    cout << "\n";
+
+    // Search for a node with key=4
+    struct node* foundLink = find(4);
+    if (foundLink != NULL) {
+        cout << "Element found: ";
+        cout << foundLink->key << "," << foundLink->data; // Print the found node's key and data
+        cout << "\n";
+    } else {
+        cout << "Element not found.\n";
+    }
+
+    // Delete a specific node with key=4
+    delet(4);
+    cout << "List after deleting an item: ";
+    printList(); // Display the list after deletion
+    cout << "\n";
+
+    // Try to find the node with key=4 again (it should not be found)
+    foundLink = find(4);
+    if (foundLink != NULL) {
+        cout << "Element found: ";
+        cout << foundLink->key << "," << foundLink->data;
+        cout << "\n";
+    } else {
+        cout << "Element not found.\n";
+    }
+
+    // Sort the linked list in ascending order by data
+    sort();
+    cout << "List after sorting the data: ";
+    printList();
+
+    // Reverse the linked list
+    reverse(&head);
+    cout << "\nList after reversing the data: ";
+    printList();
+
+    // Keep the console open to view the results
+    int x;
+    cin >> x;
 
     return 0;
 }
