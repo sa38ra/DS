@@ -161,7 +161,7 @@ void sort() {
         }
     }
 }
-
+/// Function to reverse the linked list
 void reverse(struct node** head_ref) {
     struct node* prev = NULL;     // Pointer to hold the previous node (initially NULL)
     struct node* current = *head_ref; // Pointer to traverse the list, starting from the head
